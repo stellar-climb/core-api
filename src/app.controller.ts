@@ -6,7 +6,7 @@ import type { Request } from 'express';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/admins/health')
+  @Get('/health')
   getHello(@Req() req: Request): string {
     console.log(req.headers);
     return this.appService.getHello();
