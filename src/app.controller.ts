@@ -11,4 +11,10 @@ export class AppController {
     console.log(req.headers);
     return this.appService.getHello();
   }
+
+  @Get('/admins/health')
+  getAdminsHealth(@Req() req: Request): string {
+    console.log(req.headers);
+    return this.appService.getHello();
+  }
 }
