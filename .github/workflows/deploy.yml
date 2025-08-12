@@ -27,7 +27,7 @@ jobs:
           context: .
           push: true
           # 이미지 이름: {DockerHub계정}/{이미지이름}:{태그}
-          tags: ${{ secrets.DOCKER_USERNAME }}/core-api:latest
+          tags: ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
 
       # 4. 서버에 접속하여 새 컨테이너 실행 (CD)
       - name: Deploy to Server
