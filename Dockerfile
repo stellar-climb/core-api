@@ -1,44 +1,43 @@
 # =================================================================
 # 1. 빌드 단계 (Builder Stage)
 # =================================================================
-# Alpine Linux 기반의 가볍고 특정 버전이 명시된 이미지를 사용합니다.
 FROM node:22-alpine AS builder
 
-# 작업 디렉터리를 설정합니다.
 WORKDIR /app
 
-# package.json과 package-lock.json을 먼저 복사합니다.
-# -> 이 파일들이 변경되지 않으면 다음 RUN 단계는 캐시를 사용해 빌드 속도가 빨라집니다.
+# package.json과 lock 파일을 먼저 복사하여 캐싱 활용
 COPY package*.json ./
 
-# 프로덕션용 의존성만 설치하여 빌드 시간을 단축하고 이미지 크기를 줄입니다.
-RUN npm install --only=production
+# NestJS는 빌드 스크립트 실행을 위해 devDependencies가 필요
+RUN npm install
 
-# 소스 코드를 복사합니다.
+# 소스 코드를 복사
 COPY . .
 
-# (선택) 만약 TypeScript 등 빌드 과정이 필요하다면 여기에 추가합니다.
-# RUN npm run build
+# NestJS 애플리케이션을 빌드
+RUN npm run build
 
 # =================================================================
 # 2. 최종 배포 단계 (Final Stage)
 # =================================================================
-# 다시 깨끗하고 가벼운 이미지에서 시작합니다.
+# 다시 깨끗하고 가벼운 이미지에서 시작
 FROM node:22-alpine
 
 WORKDIR /app
 
-# 빌드 단계(builder)에서 생성된 파일들만 선택적으로 복사합니다.
-# -> 소스 코드나 개발용 의존성 등 불필요한 파일은 최종 이미지에 포함되지 않습니다.
+# [중요] 빌드 단계에서 필요한 파일들만 선택적으로 복사
+# 1. 빌드 결과물(dist 폴더)
+COPY --from=builder /app/dist ./dist
+# 2. 프로덕션용 의존성(node_modules)
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app .
+# 3. package.json 파일
+COPY --from=builder /app/package.json ./package.json
 
-# 보안을 위해 root 사용자가 아닌 node 사용자로 컨테이너를 실행합니다.
+# 보안을 위해 non-root 유저로 실행
 USER node
 
-# 이 컨테이너가 3000번 포트를 사용함을 명시적으로 알립니다.
+# 애플리케이션 포트 노출
 EXPOSE 3000
 
-# 컨테이너가 시작될 때 실행할 기본 명령어를 정의합니다.
-CMD [ "node", "src/index.js" ]
+# [핵심] 컴파일된 main.js 파일을 실행
+CMD [ "node", "dist/main.js" ]
