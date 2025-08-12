@@ -38,11 +38,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 최신 이미지 받아오기
-            docker pull ${{ secrets.DOCKER_USERNAME }}/core-api:latest
+            docker pull ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
 
             # 기존 컨테이너가 있으면 중지하고 삭제
             docker stop core-api-container || true
             docker rm core-api-container || true
 
             # 새 컨테이너 실행
-            docker run -d --name core-api-container -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/core-api:latest
+            docker run -d --name core-api-container -p 3000:3000 ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
