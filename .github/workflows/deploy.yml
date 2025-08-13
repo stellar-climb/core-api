@@ -37,20 +37,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # 1. .env 파일을 생성할 디렉터리로 이동 (예시: /home/ubuntu/my-project)
-            cd /home/ubuntu/core-api
-
-            # 2. GitHub Secrets를 사용해 .env 파일을 새로 생성
-            #    Heredoc(<< EOF)을 사용하여 여러 줄의 내용을 파일에 덮어쓴다.
-            cat << EOF > .env
-            DB_HOST=${{ secrets.MYSQL_HOST }}
-            DB_PORT=${{ secrets.MYSQL_PORT }}
-            DB_USERNAME=${{ secrets.MYSQL_USERNAME }}
-            DB_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-            DB_NAME=${{ secrets.MYSQL_DATABASE }}
-            NODE_ENV=production
-            EOF
-
             # 최신 이미지 받아오기
             docker pull ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
 
@@ -61,5 +47,10 @@ jobs:
             # 새 컨테이너 실행
             docker run -d --name core-api-container \
               -p 3000:3000 \
-              --env-file ./.env \
+              -e MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
+              -e MYSQL_PORT=${{ secrets.MYSQL_PORT }} \
+              -e MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
+              -e MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
+              -e MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
+              -e NODE_ENV=production \
               ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
