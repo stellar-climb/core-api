@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 1. .env 파일을 생성할 디렉터리로 이동 (예시: /home/ubuntu/my-project)
-            cd /home/ubuntu/my-project
+            cd /home/ubuntu/core-api
 
             # 2. GitHub Secrets를 사용해 .env 파일을 새로 생성
             #    Heredoc(<< EOF)을 사용하여 여러 줄의 내용을 파일에 덮어쓴다.
