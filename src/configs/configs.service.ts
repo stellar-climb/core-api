@@ -16,8 +16,7 @@ export class ConfigsService {
       database: this.configService.get<string>('MYSQL_DATABASE'),
     };
 
-    // this.checkUndefined(configs, 'MYSQL');
-
+    this.checkUndefined(configs, 'MYSQL');
     return configs;
   }
 
