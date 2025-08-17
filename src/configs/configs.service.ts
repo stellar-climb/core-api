@@ -20,6 +20,12 @@ export class ConfigsService {
     return configs;
   }
 
+  get slack() {
+    return {
+      webhookUrl: this.configService.get<string>('SLACK_WEBHOOK_URL'),
+    };
+  }
+
   private checkUndefined(configs: Record<string, any>, name: string) {
     Object.entries(configs).forEach(([key, value]) => {
       if (value === undefined) {

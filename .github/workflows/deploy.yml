@@ -52,5 +52,6 @@ jobs:
               -e MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
               -e MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
               -e MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
+              -e SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }} \
               -e NODE_ENV=production \
               ${{ secrets.DOCKER_NICKNAME }}/core-api:latest
