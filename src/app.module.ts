@@ -5,15 +5,22 @@ import { SlackModule } from '@libs/slack';
 import { GlobalRouterModule } from './services/global-router.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UuidMiddleware } from '@middlewares';
+import { ContextMiddleware, UuidMiddleware } from '@middlewares';
+import { ContextModule } from '@libs/context';
 
 @Module({
-  imports: [ConfigsModule, DatabaseModule, SlackModule, GlobalRouterModule],
+  imports: [
+    ConfigsModule,
+    DatabaseModule,
+    SlackModule,
+    GlobalRouterModule,
+    ContextModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UuidMiddleware).forRoutes('*');
+    consumer.apply(ContextMiddleware, UuidMiddleware).forRoutes('*');
   }
 }
