@@ -1,3 +1,3 @@
-import { Users } from '../services/admins/users/domain/users.entity';
+import { User } from '../services/users/domain/users.entity';
 
-export default [Users];
+export default [User];

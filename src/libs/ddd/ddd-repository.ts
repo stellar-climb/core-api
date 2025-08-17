@@ -1,17 +1,22 @@
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DddAggregate } from './ddd-aggregate';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager, ObjectType } from 'typeorm';
 import { Context, ContextKey } from '../context';
 import { EventBox } from '../event-box/event-box';
 
 export abstract class DddRepository<T extends DddAggregate> {
+  protected entity: ObjectType<T>;
+
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     private readonly context: Context,
   ) {}
 
-  private get getManager() {
-    return this.dataSource.manager;
+  get getManager(): EntityManager {
+    return (
+      this.context.get<EntityManager>(ContextKey.ENTITY_MANAGER) ||
+      this.dataSource.manager
+    );
   }
 
   async save(entities: T[]) {

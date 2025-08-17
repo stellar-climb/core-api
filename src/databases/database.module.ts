@@ -12,6 +12,7 @@ import { DataSource } from 'typeorm';
       useFactory: (configsService: ConfigsService) => ({
         ...configsService.mysql,
         synchronize: false,
+        logging: false,
         entities,
       }),
     }),

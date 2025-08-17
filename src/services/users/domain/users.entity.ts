@@ -2,8 +2,8 @@ import { Entity, PrimaryColumn } from 'typeorm';
 import { DddAggregate } from '@libs/ddd';
 import { customNanoId } from '@libs/nanoid';
 
-@Entity({})
-export class Users extends DddAggregate {
+@Entity()
+export class User extends DddAggregate {
   @PrimaryColumn()
   id!: string;
 
