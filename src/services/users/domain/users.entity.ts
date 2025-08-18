@@ -28,7 +28,6 @@ export class User extends DddAggregate {
   roleType!: RoleType;
 
   @OneToOne(() => Role, (role) => role.user)
-  @JoinColumn()
   role!: Role;
 
   constructor(args: Ctor) {

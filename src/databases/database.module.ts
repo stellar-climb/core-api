@@ -12,7 +12,7 @@ import { BullModule } from '@nestjs/bullmq';
       inject: [ConfigsService],
       useFactory: (configsService: ConfigsService) => ({
         ...configsService.mysql,
-        synchronize: false,
+        synchronize: true,
         logging: false,
         entities,
       }),
