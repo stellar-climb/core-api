@@ -9,6 +9,7 @@ import { ContextModule } from '@libs/context';
 import admins from './services/admins';
 import general from './services/general';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventBoxModule } from './libs/event-box';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     SlackModule,
     ContextModule,
     EventEmitterModule.forRoot(),
+    EventBoxModule,
     ...admins,
     ...general,
   ],

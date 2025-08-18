@@ -5,9 +5,14 @@ import { Repository } from 'typeorm';
 import { QueueName } from './queues';
 import { Queue } from 'bullmq';
 import { OnEvent } from '@nestjs/event-emitter';
+import { InjectQueue } from '@nestjs/bullmq';
+
+export const EVENT_BOX_CREATED = 'event-box.created';
 
 // FIXME: 아 여기 좀 수동적으로 하기싫은데 방법 없나...
-const EVENT_MAP: [string, string[]][] = [];
+const EVENT_MAP: [string, string[]][] = [
+  ['UsersCreatedEvent', [QueueName.ROLE]],
+];
 
 @Injectable()
 export class EventBoxDispatcherProvider {
@@ -18,9 +23,10 @@ export class EventBoxDispatcherProvider {
   constructor(
     @InjectRepository(EventBox)
     private readonly eventBoxRepository: Repository<EventBox>,
+    @InjectQueue(QueueName.ROLE) private readonly roleQueue: Queue,
   ) {}
 
-  @OnEvent('event-box.created')
+  @OnEvent(EVENT_BOX_CREATED)
   async handleEventBoxCreated(event: EventBox) {
     // step 1. 해당 이벤트 박스가 처리되지 않은 이벤트인지 확인. -> 중복 처리를 방지하기 위함.
     const [eventBox] = await this.eventBoxRepository.find({
@@ -55,7 +61,9 @@ export class EventBoxDispatcherProvider {
 
   // NOTE: 새로운 이벤트가 추가될 때마다 이 부분도 추가해줘야함.
   private getQueue(name: string): Queue {
-    const queues: Record<string, Queue> = {};
+    const queues: Record<string, Queue> = {
+      [QueueName.ROLE]: this.roleQueue,
+    };
 
     return queues[name];
   }

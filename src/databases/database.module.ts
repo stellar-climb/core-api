@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigsModule, ConfigsService } from '@configs';
 import entities from './entities';
 import { DataSource } from 'typeorm';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -15,6 +16,12 @@ import { DataSource } from 'typeorm';
         logging: false,
         entities,
       }),
+    }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
   ],
 })

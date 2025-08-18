@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigsService } from '@configs';
 import { IncomingWebhook } from '@slack/webhook';
 import { SlackService } from './slack.service';
 
+@Global()
 @Module({
   providers: [
     {

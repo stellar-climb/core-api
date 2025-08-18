@@ -2,6 +2,7 @@ import { ContextKey } from '../context';
 import { InternalServerErrorException } from '@nestjs/common';
 import { DddService } from '../ddd';
 import { EventBox } from '../event-box/event-box';
+import { EVENT_BOX_CREATED } from '../event-box/event-box-dispatcher.provider';
 
 export function Transactional() {
   return function (
@@ -32,7 +33,7 @@ export function Transactional() {
       const eventBoxes = this.context.get<EventBox[]>(ContextKey.EVENT_BOXES);
       if (eventBoxes && eventBoxes.length > 0) {
         eventBoxes.forEach((eventBox) => {
-          this.eventEmitter.emit('event-box.created', eventBox);
+          this.eventEmitter.emit(EVENT_BOX_CREATED, eventBox);
         });
       }
       this.context.set<ContextKey.EVENT_BOXES>(ContextKey.EVENT_BOXES, []);
