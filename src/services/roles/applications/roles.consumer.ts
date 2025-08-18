@@ -11,7 +11,7 @@ export class RolesConsumer extends CommonConsumer {
 
     this.methodHandlerMap.set(
       UsersCreatedEvent.name,
-      this.rolesService.createRole.bind(this.rolesService),
+      this.rolesService.createRole.bind(this.rolesService)
     );
   }
 }

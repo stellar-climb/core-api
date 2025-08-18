@@ -1,5 +1,6 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AdminUsersService } from '../applications/admin-users.service';
+import { UsersCreateDto } from './dto';
 
 @Controller('/admins/users')
 export class AdminUsersController {
@@ -12,8 +13,9 @@ export class AdminUsersController {
     return { data };
   }
 
-  @Post()
-  async register() {
-    await this.adminUsersService.register();
+  @Post('sign-up')
+  @HttpCode(HttpStatus.CREATED)
+  async register(@Body() body: UsersCreateDto) {
+    await this.adminUsersService.register(body);
   }
 }

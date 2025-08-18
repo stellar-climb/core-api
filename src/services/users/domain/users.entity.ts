@@ -1,21 +1,63 @@
-import { AfterInsert, Entity, PrimaryColumn } from 'typeorm';
+import { AfterInsert, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { DddAggregate } from '@libs/ddd';
 import { customNanoId } from '@libs/nanoid';
 import { UsersCreatedEvent } from './events';
+import { RoleType } from '../../roles/domain/roles.entity';
+import { Role } from '../../roles/domain/roles.entity';
+import { BadRequestException } from '@nestjs/common';
+import { createHash } from 'crypto';
+
+type Ctor = {
+  email: string;
+  password: string;
+  roleType: RoleType;
+};
 
 @Entity()
 export class User extends DddAggregate {
   @PrimaryColumn()
   id!: string;
 
-  @AfterInsert()
-  async afterInsert() {
-    this.publishEvent(new UsersCreatedEvent(this.id));
-  }
+  @Column({ unique: true })
+  email!: string;
 
-  constructor() {
+  @Column()
+  password!: string;
+
+  @Column({ type: 'enum', enum: RoleType })
+  roleType!: RoleType;
+
+  @OneToOne(() => Role, (role) => role.user)
+  @JoinColumn()
+  role!: Role;
+
+  constructor(args: Ctor) {
     super();
 
-    this.id = customNanoId(10);
+    if (args) {
+      this.id = customNanoId(10);
+      this.email = args.email;
+      this.password = args.password;
+      this.roleType = args.roleType;
+
+      this.publishEvent(new UsersCreatedEvent(this.id, this.roleType));
+    }
+  }
+
+  static of(args: { email: string; password: string; confirmPassword: string }) {
+    if (args.password !== args.confirmPassword) {
+      throw new BadRequestException('비밀번호가 서로 일치하지 않습니다.');
+    }
+
+    const hashedPassword = createHash('sha256').update(args.password).digest('hex');
+
+    // NOTE: 구글 workspace 계정 만들면 그거 써야지~
+    const roleType = args.email === 'jeangho293@gmail.com' ? RoleType.ADMIN : RoleType.GENERAL;
+
+    return new User({
+      email: args.email,
+      password: hashedPassword,
+      roleType,
+    });
   }
 }

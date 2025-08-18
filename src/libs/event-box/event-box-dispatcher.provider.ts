@@ -10,9 +10,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 export const EVENT_BOX_CREATED = 'event-box.created';
 
 // FIXME: 아 여기 좀 수동적으로 하기싫은데 방법 없나...
-const EVENT_MAP: [string, string[]][] = [
-  ['UsersCreatedEvent', [QueueName.ROLE]],
-];
+const EVENT_MAP: [string, string[]][] = [['UsersCreatedEvent', [QueueName.ROLE]]];
 
 @Injectable()
 export class EventBoxDispatcherProvider {
@@ -23,7 +21,7 @@ export class EventBoxDispatcherProvider {
   constructor(
     @InjectRepository(EventBox)
     private readonly eventBoxRepository: Repository<EventBox>,
-    @InjectQueue(QueueName.ROLE) private readonly roleQueue: Queue,
+    @InjectQueue(QueueName.ROLE) private readonly roleQueue: Queue
   ) {}
 
   @OnEvent(EVENT_BOX_CREATED)
@@ -50,7 +48,7 @@ export class EventBoxDispatcherProvider {
       targetQueues.map((queueName) => {
         const queue = this.getQueue(queueName);
         return queue.add(eventBox.eventType, eventBox);
-      }),
+      })
     );
 
     // step 4. 해당 이벤트 박스를 처리 완료 상태로 업데이트.
