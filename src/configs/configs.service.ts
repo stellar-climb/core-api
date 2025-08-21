@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService as NestConfigService } from '@nestjs/config';
 import type { DataSourceOptions } from 'typeorm';
+import type { RedisOptions } from 'ioredis';
 
 @Injectable()
 export class ConfigsService {
@@ -20,6 +21,15 @@ export class ConfigsService {
     return configs;
   }
 
+  get redis() {
+    const configs: RedisOptions = {
+      host: this.configService.get<string>('REDIS_HOST'),
+    };
+
+    this.checkUndefined(configs, 'REDIS');
+    return configs;
+  }
+
   get slack() {
     return {
       webhookUrl: this.configService.get<string>('SLACK_WEBHOOK_URL'),
@@ -29,9 +39,7 @@ export class ConfigsService {
   private checkUndefined(configs: Record<string, any>, name: string) {
     Object.entries(configs).forEach(([key, value]) => {
       if (value === undefined) {
-        throw new InternalServerErrorException(
-          `${name}'s ${key} environment variable is undefined.`,
-        );
+        throw new InternalServerErrorException(`${name}'s ${key} environment variable is undefined.`);
       }
     });
   }

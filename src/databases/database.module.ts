@@ -17,11 +17,15 @@ import { BullModule } from '@nestjs/bullmq';
         entities,
       }),
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigsModule],
+      inject: [ConfigsService],
+      useFactory: (configsService: ConfigsService) => ({
+        connection: {
+          host: configsService.redis.host || 'localhost',
+          port: 6379,
+        },
+      }),
     }),
   ],
 })
