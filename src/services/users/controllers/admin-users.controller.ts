@@ -13,9 +13,11 @@ export class AdminUsersController {
     return { data };
   }
 
-  @Post('sign-up')
-  @HttpCode(HttpStatus.CREATED)
-  async register(@Body() body: UsersCreateDto) {
-    await this.adminUsersService.register(body);
+  @Post('sign-in')
+  @HttpCode(HttpStatus.OK)
+  async signIn(@Body() body: UsersCreateDto) {
+    const data = await this.adminUsersService.googleSignIn(body);
+
+    return { data };
   }
 }

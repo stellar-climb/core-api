@@ -54,5 +54,6 @@ jobs:
               -e MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
               -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
               -e SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
               -e NODE_ENV=production \
               ${{ secrets.DOCKER_NICKNAME }}/core-api:latest

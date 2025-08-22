@@ -10,8 +10,15 @@ import { createHash } from 'crypto';
 type Ctor = {
   email: string;
   password: string;
+  name: string;
   roleType: RoleType;
+  socialId: string;
+  signUpType: SignUpType;
 };
+
+export enum SignUpType {
+  GOOGLE = 'google',
+}
 
 @Entity()
 export class User extends DddAggregate {
@@ -24,11 +31,20 @@ export class User extends DddAggregate {
   @Column()
   password!: string;
 
+  @Column()
+  name!: string;
+
   @Column({ type: 'enum', enum: RoleType })
   roleType!: RoleType;
 
   @OneToOne(() => Role, (role) => role.user)
   role!: Role;
+
+  @Column({ comment: '소셜 로그인시 고유 ID' })
+  socialId!: string;
+
+  @Column({ type: 'enum', enum: SignUpType })
+  signUpType!: SignUpType;
 
   constructor(args: Ctor) {
     super();
@@ -37,13 +53,23 @@ export class User extends DddAggregate {
       this.id = customNanoId(10);
       this.email = args.email;
       this.password = args.password;
+      this.name = args.name;
       this.roleType = args.roleType;
+      this.socialId = args.socialId;
+      this.signUpType = args.signUpType;
 
       this.publishEvent(new UsersCreatedEvent(this.id, this.roleType));
     }
   }
 
-  static of(args: { email: string; password: string; confirmPassword: string }) {
+  static of(args: {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    socialId: string;
+    signUpType: SignUpType;
+    name: string;
+  }) {
     if (args.password !== args.confirmPassword) {
       throw new BadRequestException('비밀번호가 서로 일치하지 않습니다.');
     }
@@ -57,6 +83,9 @@ export class User extends DddAggregate {
       email: args.email,
       password: hashedPassword,
       roleType,
+      socialId: args.socialId,
+      signUpType: args.signUpType,
+      name: args.name,
     });
   }
 }

@@ -30,6 +30,15 @@ export class ConfigsService {
     return configs;
   }
 
+  get jwt() {
+    const configs = {
+      secret: this.configService.get<string>('JWT_SECRET'),
+    };
+
+    this.checkUndefined(configs, 'JWT');
+    return configs;
+  }
+
   get slack() {
     return {
       webhookUrl: this.configService.get<string>('SLACK_WEBHOOK_URL'),

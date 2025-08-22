@@ -10,6 +10,8 @@ import admins from './services/admins';
 import general from './services/general';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventBoxModule } from './libs/event-box';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigsService } from '@configs';
 
 @Module({
   imports: [
@@ -19,6 +21,14 @@ import { EventBoxModule } from './libs/event-box';
     ContextModule,
     EventEmitterModule.forRoot(),
     EventBoxModule,
+    JwtModule.registerAsync({
+      global: true,
+      imports: [ConfigsModule],
+      inject: [ConfigsService],
+      useFactory: (configsService: ConfigsService) => ({
+        secret: configsService.jwt.secret,
+      }),
+    }),
     ...admins,
     ...general,
   ],

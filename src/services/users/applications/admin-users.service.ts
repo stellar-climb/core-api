@@ -1,12 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DddService } from '@libs/ddd';
 import { UsersRepository } from '../repository/users.repository';
-import { User } from '../domain/users.entity';
+import { SignUpType, User } from '../domain/users.entity';
 import { Transactional } from '@libs/decorators';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminUsersService extends DddService {
-  constructor(private readonly usersRepository: UsersRepository) {
+  constructor(
+    private readonly usersRepository: UsersRepository,
+    private readonly jwtService: JwtService
+  ) {
     super();
   }
 
@@ -15,21 +19,29 @@ export class AdminUsersService extends DddService {
   }
 
   @Transactional()
-  async register({ email, password }: { email: string; password: string }) {
-    const [duplicatedUser] = await this.usersRepository.find({ email });
+  async googleSignIn({ token }: { token: string }) {
+    const { sub, email, name } = this.jwtService.decode<{ sub: string; email: string; name: string }>(token);
 
-    if (duplicatedUser) {
-      throw new BadRequestException(`이미 ${email} 이메일로 가입된 유저가 있습니다.`, {
-        cause: '해당 이메일은 이미 가입된 계정입니다.',
+    const [user] = await this.usersRepository.find({ socialId: sub, signUpType: SignUpType.GOOGLE });
+
+    let userId = user?.id || '';
+
+    if (!user) {
+      const newUser = User.of({
+        email,
+        password: [sub, email].join(''),
+        confirmPassword: [sub, email].join(''),
+        socialId: sub,
+        signUpType: SignUpType.GOOGLE,
+        name,
       });
+
+      await this.usersRepository.save([newUser]);
+      userId = newUser.id;
     }
 
-    const user = User.of({
-      email,
-      password,
-      confirmPassword: password,
-    });
+    const accessToken = this.jwtService.sign({ id: userId });
 
-    await this.usersRepository.save([user]);
+    return { accessToken };
   }
 }
