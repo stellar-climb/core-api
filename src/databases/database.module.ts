@@ -5,6 +5,8 @@ import entities from './entities';
 import { DataSource } from 'typeorm';
 import { BullModule } from '@nestjs/bullmq';
 
+const isLocal = process.env.NODE_ENV !== 'production';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -24,6 +26,7 @@ import { BullModule } from '@nestjs/bullmq';
         connection: {
           host: configsService.redis.host || 'localhost',
           port: 6379,
+          ...(isLocal ? {} : { tls: {} }),
         },
       }),
     }),
