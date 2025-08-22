@@ -47,6 +47,7 @@ jobs:
             # 새 컨테이너 실행
             docker run -d --name core-api-container \
               -p 3000:3000 \
+              --add-host=host.docker.internal:host-gateway \
               -e MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
               -e MYSQL_PORT=${{ secrets.MYSQL_PORT }} \
               -e MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }} \
