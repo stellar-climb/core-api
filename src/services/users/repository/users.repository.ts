@@ -8,10 +8,17 @@ import { RoleType } from '../../roles/domain/roles.entity';
 export class UsersRepository extends DddRepository<User> {
   entity = User;
 
-  async find(condition: { email?: string; roleType?: RoleType; socialId?: string; signUpType?: SignUpType }) {
+  async find(condition: {
+    id?: string;
+    email?: string;
+    roleType?: RoleType;
+    socialId?: string;
+    signUpType?: SignUpType;
+  }) {
     return this.getManager.find(this.entity, {
       where: {
         ...stripUndefined({
+          id: condition.id,
           email: condition.email,
           roleType: condition.roleType,
           socialId: condition.socialId,
@@ -21,10 +28,17 @@ export class UsersRepository extends DddRepository<User> {
     });
   }
 
-  async count(condition: { email?: string; roleType?: RoleType; socialId?: string; signUpType?: SignUpType }) {
+  async count(condition: {
+    id?: string;
+    email?: string;
+    roleType?: RoleType;
+    socialId?: string;
+    signUpType?: SignUpType;
+  }) {
     return this.getManager.count(this.entity, {
       where: {
         ...stripUndefined({
+          id: condition.id,
           email: condition.email,
           roleType: condition.roleType,
           socialId: condition.socialId,
