@@ -5,11 +5,7 @@ import { EventBox } from '../event-box/event-box';
 import { EVENT_BOX_CREATED } from '../event-box/event-box-dispatcher.provider';
 
 export function Transactional() {
-  return function (
-    target: DddService,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: DddService, propertyKey: string, descriptor: PropertyDescriptor) {
     // NOTE: 적용된 메서드의 function
     const originalMethod = descriptor.value;
 
@@ -17,9 +13,7 @@ export function Transactional() {
       let result: any;
 
       if (!this.context || !this.entityManager) {
-        throw new InternalServerErrorException(
-          'Context or Datasource instance is not existed.',
-        );
+        throw new InternalServerErrorException('Context or Datasource instance is not existed.');
       }
 
       //  NOTE: 해당 방식은 무조건 transaction() 메서드가 제공하는 entityManager를 사용하여야한다. https://typeorm.io/docs/advanced-topics/transactions

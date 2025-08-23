@@ -9,10 +9,7 @@ export abstract class CommonConsumer extends WorkerHost {
   @Inject()
   private readonly slackService!: SlackService;
 
-  protected readonly methodHandlerMap = new Map<
-    string,
-    (data: any) => Promise<void>
-  >();
+  protected readonly methodHandlerMap = new Map<string, (data: any) => Promise<void>>();
 
   async process(job: Job) {
     const {
@@ -30,13 +27,10 @@ export abstract class CommonConsumer extends WorkerHost {
 
   @OnWorkerEvent('failed')
   onFailed(job: Job, error: Error) {
-    console.error(
-      `[traceId: ${job.data.traceId}] ${job.data.eventType} is not success.`,
-      error.stack,
-    );
+    console.error(`[traceId: ${job.data.traceId}] ${job.data.eventType} is not success.`, error.stack);
     if (process.env.NODE_ENV !== 'local') {
       this.slackService.sendMessage(
-        `[traceId: ${job.data.traceId}] ${job.data.eventType} is not success.\n${error.stack}`,
+        `[traceId: ${job.data.traceId}] ${job.data.eventType} is not success.\n${error.stack}`
       );
     }
   }

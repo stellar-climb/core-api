@@ -6,10 +6,7 @@ import { BullModule } from '@nestjs/bullmq';
 import queues from './queues';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([EventBox]),
-    BullModule.registerQueue(...queues),
-  ],
+  imports: [TypeOrmModule.forFeature([EventBox]), BullModule.registerQueue(...queues)],
   providers: [EventBoxDispatcherProvider],
   exports: [EventBoxDispatcherProvider],
 })

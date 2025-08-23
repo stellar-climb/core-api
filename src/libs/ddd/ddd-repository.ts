@@ -9,21 +9,16 @@ export abstract class DddRepository<T extends DddAggregate> {
 
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
-    private readonly context: Context,
+    private readonly context: Context
   ) {}
 
   get getManager(): EntityManager {
-    return (
-      this.context.get<EntityManager>(ContextKey.ENTITY_MANAGER) ||
-      this.dataSource.manager
-    );
+    return this.context.get<EntityManager>(ContextKey.ENTITY_MANAGER) || this.dataSource.manager;
   }
 
   async save(entities: T[]) {
     await this.saveEntities(entities);
-    await this.saveEvents(
-      entities.flatMap((entity) => entity.getPublishedEvents()),
-    );
+    await this.saveEvents(entities.flatMap((entity) => entity.getPublishedEvents()));
   }
 
   private async saveEntities(entities: T[]) {
