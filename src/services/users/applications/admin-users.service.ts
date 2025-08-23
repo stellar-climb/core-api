@@ -22,6 +22,12 @@ export class AdminUsersService extends DddService {
   async googleSignIn({ token }: { token: string }) {
     const { sub, email, name } = this.jwtService.decode<{ sub: string; email: string; name: string }>(token);
 
+    if (email !== 'jeangho293@gmail.com') {
+      throw new BadRequestException(`해당 계정(${email})은 관리자 계정으로 접근할 수 없습니다.`, {
+        cause: '해당 계정은 관리자 계정으로 접근할 수 없습니다.',
+      });
+    }
+
     const [user] = await this.usersRepository.find({ socialId: sub, signUpType: SignUpType.GOOGLE });
 
     let userId = user?.id || '';
