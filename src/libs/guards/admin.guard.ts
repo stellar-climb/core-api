@@ -17,13 +17,14 @@ export class AdminGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext) {
+    // NOTE: auth 무효화. 로그인 같은 경우 무시하고 통과시키기 위해 사용
     const isPublic = this.reflector.getAllAndOverride<boolean>(PUBLIC_KEY, [context.getHandler(), context.getClass()]);
 
     if (isPublic) {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
@@ -43,7 +44,6 @@ export class AdminGuard implements CanActivate {
     }
 
     this.context.set(ContextKey.USER, user);
-
     return true;
   }
 

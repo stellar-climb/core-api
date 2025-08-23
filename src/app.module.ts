@@ -12,7 +12,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventBoxModule } from './libs/event-box';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigsService } from '@configs';
-import { GuardModule } from './libs/guards/guard.module';
 
 @Module({
   imports: [
@@ -30,7 +29,6 @@ import { GuardModule } from './libs/guards/guard.module';
         secret: configsService.jwt.secret,
       }),
     }),
-    GuardModule,
     ...admins,
     ...general,
   ],
