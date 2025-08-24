@@ -1,4 +1,4 @@
-import { AfterInsert, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 import { DddAggregate } from '@libs/ddd';
 import { customNanoId } from '@libs/nanoid';
 import { UsersCreatedEvent } from './events';
@@ -40,6 +40,9 @@ export class User extends DddAggregate {
 
   @Column()
   name!: string;
+
+  @Column({ nullable: true })
+  profileImageUrl?: string;
 
   @Column({ type: 'enum', enum: RoleType })
   roleType!: RoleType;

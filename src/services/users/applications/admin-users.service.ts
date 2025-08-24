@@ -9,6 +9,8 @@ export class AdminUsersService extends DddService {
   }
 
   async list() {
-    return this.usersRepository.find({});
+    const [users, total] = await Promise.all([this.usersRepository.find({}), this.usersRepository.count({})]);
+
+    return { items: users, total };
   }
 }
