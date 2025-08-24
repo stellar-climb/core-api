@@ -13,4 +13,14 @@ export class AdminUsersService extends DddService {
 
     return { items: users, total };
   }
+
+  async retrieve({ id }: { id: string }) {
+    const [user] = await this.usersRepository.find({ id });
+
+    if (!user) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+
+    return user;
+  }
 }

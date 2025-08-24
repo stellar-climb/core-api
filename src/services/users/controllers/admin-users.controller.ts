@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { AdminUsersService } from '../applications/admin-users.service';
 import { Context, ContextKey } from '@libs/context';
 import { AdminGuard } from '@libs/guards/admin.guard';
@@ -23,5 +23,12 @@ export class AdminUsersController {
     const user = this.context.get<ContextKey.USER>(ContextKey.USER);
 
     return { data: user };
+  }
+
+  @Get(':id')
+  async retrieve(@Param('id') id: string) {
+    const data = await this.adminUsersService.retrieve({ id });
+
+    return { data };
   }
 }
