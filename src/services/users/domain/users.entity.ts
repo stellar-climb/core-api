@@ -20,6 +20,13 @@ export enum SignUpType {
   GOOGLE = 'google',
 }
 
+export enum UserStatus {
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended',
+  DELETED = 'deleted',
+}
+
 @Entity()
 export class User extends DddAggregate {
   @PrimaryColumn()
@@ -46,6 +53,9 @@ export class User extends DddAggregate {
   @Column({ type: 'enum', enum: SignUpType })
   signUpType!: SignUpType;
 
+  @Column({ type: 'enum', enum: UserStatus })
+  status!: UserStatus;
+
   constructor(args: Ctor) {
     super();
 
@@ -57,6 +67,7 @@ export class User extends DddAggregate {
       this.roleType = args.roleType;
       this.socialId = args.socialId;
       this.signUpType = args.signUpType;
+      this.status = UserStatus.ACTIVE;
 
       this.publishEvent(new UsersCreatedEvent(this.id, this.roleType));
     }

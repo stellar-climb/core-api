@@ -1,7 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AdminUsersService } from '../applications/admin-users.service';
 import { Context, ContextKey } from '@libs/context';
-import { Public } from '@libs/decorators';
 import { AdminGuard } from '@libs/guards/admin.guard';
 
 @Controller('/admins/users')
@@ -12,7 +11,6 @@ export class AdminUsersController {
     private readonly adminUsersService: AdminUsersService
   ) {}
 
-  @Public()
   @Get()
   async list() {
     const data = await this.adminUsersService.list();
