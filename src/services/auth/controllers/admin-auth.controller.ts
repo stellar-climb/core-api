@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthTokenDto } from './dto';
 import { AdminAuthService } from '../applications/admin-auth.service';
+import { AdminGuard } from '@libs/guards';
 
 @Controller('admins/auth')
 export class AdminAuthController {
@@ -14,6 +15,7 @@ export class AdminAuthController {
   }
 
   @Get('bull-dashboard')
+  @UseGuards(AdminGuard)
   async getBullDashboard() {
     // 1. Destructure body, params, query
     // 2. Get context
