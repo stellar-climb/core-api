@@ -30,7 +30,7 @@ import { BullDashboardModule } from './libs/bull-dashboard/bull-dashboard.module
         secret: configsService.jwt.secret,
       }),
     }),
-    // BullDashboardModule,
+    BullDashboardModule,
     ...admins,
     ...general,
   ],

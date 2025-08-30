@@ -47,4 +47,10 @@ export class AdminAuthService extends DddService {
 
     return { accessToken };
   }
+
+  async accessBullDashboard() {
+    const accessToken = this.jwtService.sign({ id: 'access-bull-dashboard' });
+
+    return { accessToken };
+  }
 }
