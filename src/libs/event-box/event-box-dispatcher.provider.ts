@@ -47,7 +47,15 @@ export class EventBoxDispatcherProvider {
     await Promise.all(
       targetQueues.map((queueName) => {
         const queue = this.getQueue(queueName);
-        return queue.add(eventBox.eventType, eventBox);
+        return queue.add(eventBox.eventType, eventBox, {
+          removeOnComplete: {
+            count: 100,
+            age: 1 * 24 * 3600,
+          },
+          removeOnFail: {
+            age: 7 * 24 * 3600,
+          },
+        });
       })
     );
 
