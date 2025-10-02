@@ -7,6 +7,10 @@ import type { RedisOptions } from 'ioredis';
 export class ConfigsService {
   constructor(private readonly configService: NestConfigService) {}
 
+  isProd() {
+    return this.configService.get<string>('NODE_ENV') === 'production';
+  }
+
   get mysql() {
     const configs: DataSourceOptions = {
       type: 'mysql',
