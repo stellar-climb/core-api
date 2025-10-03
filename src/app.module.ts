@@ -12,7 +12,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { EventBoxModule } from './libs/event-box';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigsService } from '@configs';
-import { BullDashboardModule } from './libs/bull-dashboard/bull-dashboard.module';
+import { RequestLoggerInterceptor } from '@libs/interceptors';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ErrorExceptionFilter } from '@libs/filters';
 
 @Module({
   imports: [
@@ -30,12 +32,15 @@ import { BullDashboardModule } from './libs/bull-dashboard/bull-dashboard.module
         secret: configsService.jwt.secret,
       }),
     }),
-    BullDashboardModule,
     ...admins,
     ...general,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_INTERCEPTOR, useClass: RequestLoggerInterceptor },
+    { provide: APP_FILTER, useClass: ErrorExceptionFilter },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

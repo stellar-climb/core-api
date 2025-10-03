@@ -7,8 +7,16 @@ import type { RedisOptions } from 'ioredis';
 export class ConfigsService {
   constructor(private readonly configService: NestConfigService) {}
 
+  isLocal() {
+    return this.configService.get<string>('NODE_ENV') === 'local';
+  }
+
   isProd() {
     return this.configService.get<string>('NODE_ENV') === 'production';
+  }
+
+  isDev() {
+    return this.configService.get<string>('NODE_ENV') === 'development';
   }
 
   get mysql() {
