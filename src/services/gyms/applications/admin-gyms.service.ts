@@ -27,7 +27,7 @@ export class AdminGymsService extends DddService {
   }
 
   async list({}, options?: PaginationOptions) {
-    const [gyms, total] = await Promise.all([this.gymsRepository.find({}), this.gymsRepository.count({})]);
+    const [gyms, total] = await Promise.all([this.gymsRepository.find({}, options), this.gymsRepository.count({})]);
 
     return { items: gyms, total };
   }
