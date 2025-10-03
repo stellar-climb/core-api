@@ -34,13 +34,14 @@ export class ErrorExceptionFilter implements ExceptionFilter {
   }
 
   private formatException(exception: HttpException) {
-    const baseResponse = { statusCode: 500, message: 'An unexpected error occurred on the server.' };
+    const baseResponse = { statusCode: 500, message: '' };
 
     if (exception && typeof exception.getStatus === 'function') {
       baseResponse.statusCode = exception.getStatus();
     }
 
-    baseResponse.message = (exception.cause as string | undefined) || exception.message;
+    baseResponse.message =
+      (exception.cause as string | undefined) || exception.message || 'An unexpected error occurred on the server.';
 
     return baseResponse;
   }
