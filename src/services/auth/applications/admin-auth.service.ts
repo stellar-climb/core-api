@@ -19,7 +19,7 @@ export class AdminAuthService extends DddService {
   async createToken({ googleToken }: { googleToken: string }) {
     const { sub, email, name } = this.jwtService.decode<{ sub: string; email: string; name: string }>(googleToken);
 
-    if (email !== 'jeangho293@gmail.com') {
+    if (email !== 'jeangho293@gmail.com' && email !== 'kimmogeum@gmail.com') {
       throw new UnauthorizedException(`해당 계정(${email})은 관리자 계정으로 접근할 수 없습니다.`, {
         cause: '해당 계정은 관리자 계정으로 접근할 수 없습니다.',
       });
