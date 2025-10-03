@@ -11,7 +11,7 @@ export class Gym extends DddAggregate {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   name!: string;
 
   @Column()

@@ -1,3 +1,5 @@
+export * from './typeorm';
+
 export function stripUndefined(obj: { [key: string]: any }) {
   const stripped = Object.keys(obj).reduce((acc: { [key: string]: any }, prop) => {
     if (obj[prop] !== undefined) {

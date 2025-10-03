@@ -1,17 +1,19 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Context, ContextKey } from '../context';
-import { UsersRepository } from '../../services/users/repository/users.repository';
 import type { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { RoleType } from '../../services/roles/domain/roles.entity';
 import { PUBLIC_KEY } from '../decorators';
 import { Reflector } from '@nestjs/core';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { User } from '../../services/users/domain/users.entity';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
   constructor(
+    @InjectDataSource() private readonly datasource: DataSource,
     private readonly context: Context,
-    private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector
   ) {}
@@ -32,8 +34,7 @@ export class AdminGuard implements CanActivate {
     }
 
     const { id } = this.jwtService.verify<{ id: string }>(token);
-
-    const [user] = await this.usersRepository.find({ id });
+    const [user] = await this.datasource.getRepository(User).find({ where: { id } });
 
     if (!user) {
       throw new UnauthorizedException(`해당 유저는 존재하지 않습니다.`);
