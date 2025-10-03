@@ -7,16 +7,16 @@ export abstract class DddAggregate {
   @CreateDateColumn()
   private createdAt!: Date;
 
-  @Column()
+  @Column({ select: false })
   private createdBy!: string;
 
   @UpdateDateColumn()
   private updatedAt!: Date;
 
-  @Column()
+  @Column({ select: false })
   private updatedBy!: string;
 
-  @DeleteDateColumn({ nullable: true })
+  @DeleteDateColumn({ nullable: true, select: false })
   deletedAt?: Date | null;
 
   private events: EventBox[] = [];

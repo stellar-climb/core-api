@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Gym } from '../domain/gyms.entity';
 import { DddRepository } from '@libs/ddd';
-import { stripUndefined } from '@libs/utils';
+import { convertOptions, type PaginationOptions, stripUndefined } from '@libs/utils';
 
 @Injectable()
 export class GymsRepository extends DddRepository<Gym> {
   entity = Gym;
 
-  async find(condition: { name?: string }) {
+  async find(condition: { name?: string }, options?: PaginationOptions) {
     return this.getManager.find(this.entity, {
       where: {
         ...stripUndefined({
           name: condition.name,
         }),
       },
+      ...convertOptions(options),
     });
   }
 

@@ -4,6 +4,7 @@ import { GymsRepository } from '../repository/gyms.repository';
 import { Transactional } from '@libs/decorators';
 import { Gym } from '../domain/gyms.entity';
 import { BadRequestException } from '@nestjs/common';
+import type { PaginationOptions } from '@libs/utils';
 
 @Injectable()
 export class AdminGymsService extends DddService {
@@ -23,5 +24,11 @@ export class AdminGymsService extends DddService {
 
     const gym = new Gym({ name, address });
     await this.gymsRepository.save([gym]);
+  }
+
+  async list({}, options?: PaginationOptions) {
+    const [gyms, total] = await Promise.all([this.gymsRepository.find({}), this.gymsRepository.count({})]);
+
+    return { items: gyms, total };
   }
 }
