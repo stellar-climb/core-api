@@ -91,7 +91,8 @@ export class User extends DddAggregate {
     const hashedPassword = createHash('sha256').update(args.password).digest('hex');
 
     // NOTE: 구글 workspace 계정 만들면 그거 써야지~
-    const roleType = args.email === 'jeangho293@gmail.com' ? RoleType.ADMIN : RoleType.GENERAL;
+    const roleType =
+      args.email === 'jeangho293@gmail.com' || args.email === 'kimmogeum@gmail.com' ? RoleType.ADMIN : RoleType.GENERAL;
 
     return new User({
       email: args.email,
