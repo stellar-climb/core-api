@@ -1,8 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards, Query } from '@nestjs/common';
 import { AdminGymsService } from '../applications/admin-gyms.service';
 import { AdminGuard } from '@libs/guards';
-import { GymCreateDto } from './dto';
-import type { PaginationOptions } from '@libs/utils';
+import { GymCreateDto, GymQueryDto } from './dto';
 
 @Controller('admins/gyms')
 @UseGuards(AdminGuard)
@@ -21,13 +20,13 @@ export class AdminGymsController {
   }
 
   @Get()
-  async list(@Query() query: PaginationOptions) {
+  async list(@Query() query: GymQueryDto) {
     // 1. Destructure body, params, query
-    const { ...options } = query;
+    const { search, searchValue, ...options } = query;
 
     // 2. Get context
     // 3. Get result
-    const data = await this.adminGymsService.list({}, options);
+    const data = await this.adminGymsService.list({ search, searchValue }, options);
 
     // 4. Send response
     return { data };

@@ -1,4 +1,24 @@
+import { IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { ILike } from 'typeorm';
+
 type OrderType = 'ASC' | 'DESC';
+
+export class PaginationDto {
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  page?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => Number(value))
+  limit?: number;
+
+  @IsOptional()
+  sort?: string;
+
+  @IsOptional()
+  order?: OrderType;
+}
 
 export interface PaginationOptions {
   page?: number;
@@ -30,7 +50,10 @@ export const convertOptions = (options?: PaginationOptions) => {
   return { skip, take, order };
 };
 
-export interface PeriodOptions {
-  startDate?: string;
-  endDate?: string;
+export function checkLike(search?: string, searchValue?: any) {
+  if (search && searchValue) {
+    return { [search]: ILike(`%${searchValue}%`) };
+  }
+
+  return undefined;
 }
